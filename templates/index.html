@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Diagnosis Citra Medis</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header Aplikasi -->
+        <header class="app-header">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                <h1>Sistem Diagnosis Citra Medis</h1>
+            </div>
+            <p class="subtitle">Deteksi Sel Skuamosa Pada Mulut Berbasis AI</p>
+        </header>
+
+        <!-- Konten Utama (Layout Dua Kolom) -->
+        <main class="content-grid">
+            <!-- Kolom Kiri: Panel Unggah -->
+            <section class="panel upload-panel">
+                <div class="panel-header">
+                    <h2>Unggah Citra</h2>
+                    <p>Pilih atau seret citra medis untuk dianalisis.</p>
+                </div>
+                <div class="panel-body">
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg" hidden>
+                        <div class="upload-placeholder" id="upload-placeholder">
+                            <div class="upload-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            </div>
+                            <p><strong>Pilih sebuah file</strong> atau seret ke sini</p>
+                            <span class="file-types">Format yang didukung: JPG, PNG, JPEG</span>
+                        </div>
+                        <div class="upload-preview hidden" id="upload-preview-container">
+                             <img id="upload-preview-image" src="#" alt="Pratinjau Gambar" />
+                             <button id="change-image-button" class="button secondary">Ganti Gambar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kolom Kanan: Panel Hasil -->
+            <section class="panel result-panel">
+                <div class="panel-header">
+                    <h2>Laporan Analisis</h2>
+                    <p>Hasil diagnosis akan ditampilkan di bawah ini.</p>
+                </div>
+                <div class="panel-body" id="result-area">
+                    <!-- Tampilan Awal -->
+                    <div class="initial-state" id="initial-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.4.3-3.5.8-1.1.6-2.2 1.4-3 2.5s-1.4 2.4-1.5 3.7c0 1.3.3 2.6.8 3.8s1.3 2.3 2.3 3.2c1 1 2.2 1.7 3.5 2.2s2.7.8 4.2.8c1.3 0 2.6-.3 3.8-.8s2.3-1.3 3.2-2.3c1-1 1.7-2.2 2.2-3.5.4-1.2.7-2.5.7-3.8c0-1.5-.3-2.9-.8-4.2s-1.3-2.4-2.3-3.3c-1-1-2.2-1.7-3.5-2.2C14.6 3.3 13.3 3 12 3z"></path><path d="M12 9.1c-1.3 0-2.6.5-3.5 1.4-1 .9-1.5 2.2-1.5 3.5s.5 2.6 1.4 3.5c.9 1 2.2 1.5 3.5 1.5s2.6-.5 3.5-1.4c1-.9 1.5-2.2 1.5-3.5s-.5-2.6-1.4-3.5c-.9-1-2.2-1.5-3.5-1.5z"></path></svg>
+                        <p>Menunggu unggahan citra medis...</p>
+                    </div>
+
+                    <!-- Tampilan Saat Memproses -->
+                    <div class="loading-state hidden" id="loading-state">
+                        <div class="loader"></div>
+                        <p>Sedang menganalisis citra, harap tunggu...</p>
+                    </div>
+
+                    <!-- Tampilan Hasil Diagnosis -->
+                    <div class="report-state hidden" id="report-state">
+                        <div class="report-item">
+                            <h3>Hasil Diagnosis</h3>
+                            <p id="result-text" class="result-text-placeholder"></p>
+                        </div>
+                         <div class="report-item">
+                            <h3>Rekomendasi</h3>
+                            <p id="recommendation-text">Disarankan untuk konsultasi lebih lanjut dengan dokter spesialis untuk validasi dan penanganan.</p>
+                        </div>
+                        <button id="new-analysis-button" class="button primary">Analisis Baru</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
