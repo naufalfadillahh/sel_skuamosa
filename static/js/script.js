@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!file) return;
 
         // Validasi tipe file
-        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (!allowedTypes.includes(file.type)) {
-            alert('Tipe file tidak valid. Harap unggah file PNG, JPG, atau JPEG.');
+            alert('Tipe file tidak valid.');
             return;
         }
 
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultText.className = 'result-text-placeholder'; // Reset class
         if (isError) {
             resultText.classList.add('kanker');
-        } else if (result.toLowerCase().includes('kanker')) {
+        } else if (result.includes('Karsinoma') || result.includes('karsinoma')) {
             resultText.classList.add('kanker');
         } else {
             resultText.classList.add('normal');

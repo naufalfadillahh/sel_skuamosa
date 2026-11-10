@@ -1,0 +1,1 @@
+{ "builds": [ { "src": "api/index.py", "use": "@vercel/python", "config": { "includeFiles": ["templates/**", "static/css/**", "static/js/**", "static/images/**", "static/samples/**", "static/models/mulut_model_5.tflite"] } } ], "routes": [ { "src": "/(.*)", "dest": "api/index.py" } ] }
