@@ -3,92 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Diagnosis Citra Medis</title>
-    <!-- Fonts -->
+    <title>Sistem Diagnosis Citra Medis | Deteksi Sel Skuamosa Rongga Mulut</title>
+    <meta name="description" content="Klasifikasi citra sel rongga mulut (normal atau karsinoma sel skuamosa) dengan Convolutional Neural Network. Skripsi S1 Informatika Universitas Gunadarma.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233b82f6'/%3E%3Cpath d='M32 14 14 23l18 9 18-9-18-9zM14 41l18 9 18-9M14 32l18 9 18-9' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="main-container">
-        <!-- Header Aplikasi -->
         <header class="app-header">
-            <div class="logo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                <h1>Sistem Diagnosis Citra Medis</h1>
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </span>
+                <div>
+                    <h1>Sistem Diagnosis Citra Medis</h1>
+                    <p class="subtitle">Deteksi sel skuamosa rongga mulut berbasis AI</p>
+                </div>
             </div>
-            <p class="subtitle">Deteksi Sel Skuamosa Pada Mulut Berbasis AI</p>
+            <ul class="meta-chips" aria-label="Teknologi">
+                <li>CNN</li>
+                <li>TensorFlow Lite</li>
+                <li>Flask</li>
+            </ul>
         </header>
 
-        <!-- Konten Utama (Layout Dua Kolom) -->
         <main class="content-grid">
-            <!-- Kolom Kiri: Panel Unggah -->
-            <section class="panel upload-panel">
+            <!-- Panel unggah -->
+            <section class="panel upload-panel" aria-labelledby="upload-title">
                 <div class="panel-header">
-                    <h2>Unggah Citra</h2>
-                    <p>Pilih atau seret citra medis berformat JPG untuk dianalisis.</p>
+                    <span class="step">1</span>
+                    <div>
+                        <h2 id="upload-title">Unggah Citra</h2>
+                        <p>Pilih atau seret citra mikroskopis berformat JPG.</p>
+                    </div>
                 </div>
                 <div class="panel-body">
-                    <div class="upload-area" id="upload-area">
-                        <!-- Dibatasi hanya untuk format JPG/JPEG -->
-                        <input type="file" id="file-input" accept="image/jpeg, image/jpg" hidden>
+                    <div class="upload-area" id="upload-area" tabindex="0" role="button" aria-label="Pilih citra JPG untuk dianalisis">
+                        <input type="file" id="file-input" accept="image/jpeg" hidden>
                         <div class="upload-placeholder" id="upload-placeholder">
-                            <div class="upload-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <div class="upload-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                             </div>
-                            <p><strong>Pilih sebuah file</strong> atau seret ke sini</p>
-                            <span class="file-types">Format yang didukung: JPG, JPEG</span>
-                            <span class="file-types">Tidak punya citra? Unduh contoh:
-                                <a href="{{ url_for('static', filename='samples/oral_normal_0001.jpg') }}" download onclick="event.stopPropagation()">sel normal</a> ·
-                                <a href="{{ url_for('static', filename='samples/oral_scc_0001.jpg') }}" download onclick="event.stopPropagation()">sel karsinoma</a></span>
+                            <p class="drop-title">Seret citra ke sini</p>
+                            <p class="drop-or">atau</p>
+                            <span class="button primary">Pilih file</span>
+                            <p class="file-types">JPG / JPEG · maks. 5 MB · diubah ke 224×224 piksel</p>
                         </div>
                         <div class="upload-preview hidden" id="upload-preview-container">
-                           <img id="upload-preview-image" src="#" alt="Pratinjau Gambar" />
-                           <button id="change-image-button" class="button secondary">Ganti Gambar</button>
+                            <img id="upload-preview-image" src="" alt="Pratinjau citra yang diunggah">
+                            <p class="file-name" id="file-name"></p>
+                            <button type="button" id="change-image-button" class="button secondary">Ganti citra</button>
+                        </div>
+                    </div>
+
+                    <div class="samples">
+                        <div class="samples-head">
+                            <h3>Tidak punya citra? Coba contoh</h3>
+                            <span>Klik untuk langsung menganalisis</span>
+                        </div>
+                        <div class="samples-grid">
+                            <button type="button" class="sample" data-src="{{ url_for('static', filename='samples/oral_normal_0001.jpg') }}" data-name="oral_normal_0001.jpg">
+                                <img src="{{ url_for('static', filename='samples/oral_normal_0001.jpg') }}" alt="" loading="lazy">
+                                <span><b>Sel normal</b><small>oral_normal_0001.jpg</small></span>
+                            </button>
+                            <button type="button" class="sample" data-src="{{ url_for('static', filename='samples/oral_scc_0001.jpg') }}" data-name="oral_scc_0001.jpg">
+                                <img src="{{ url_for('static', filename='samples/oral_scc_0001.jpg') }}" alt="" loading="lazy">
+                                <span><b>Sel karsinoma</b><small>oral_scc_0001.jpg</small></span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Kolom Kanan: Panel Hasil -->
-            <section class="panel result-panel">
+            <!-- Panel hasil -->
+            <section class="panel result-panel" aria-labelledby="result-title" aria-live="polite">
                 <div class="panel-header">
-                    <h2>Laporan Analisis</h2>
-                    <p>Hasil diagnosis akan ditampilkan di bawah ini.</p>
+                    <span class="step">2</span>
+                    <div>
+                        <h2 id="result-title">Laporan Analisis</h2>
+                        <p>Hasil klasifikasi model akan muncul di sini.</p>
+                    </div>
                 </div>
                 <div class="panel-body" id="result-area">
-                    <!-- Tampilan Awal -->
                     <div class="initial-state" id="initial-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.4.3-3.5.8-1.1.6-2.2 1.4-3 2.5s-1.4 2.4-1.5 3.7c0 1.3.3 2.6.8 3.8s1.3 2.3 2.3 3.2c1 1 2.2 1.7 3.5 2.2s2.7.8 4.2.8c1.3 0 2.6-.3 3.8-.8s2.3-1.3 3.2-2.3c1-1 1.7-2.2 2.2-3.5.4-1.2.7-2.5.7-3.8c0-1.5-.3-2.9-.8-4.2s-1.3-2.4-2.3-3.3c-1-1-2.2-1.7-3.5-2.2C14.6 3.3 13.3 3 12 3z"></path><path d="M12 9.1c-1.3 0-2.6.5-3.5 1.4-1 .9-1.5 2.2-1.5 3.5s.5 2.6 1.4 3.5c.9 1 2.2 1.5 3.5 1.5s2.6-.5 3.5-1.4c1-.9 1.5-2.2 1.5-3.5s-.5-2.6-1.4-3.5c-.9-1-2.2-1.5-3.5-1.5z"></path></svg>
-                        <p>Menunggu unggahan citra medis...</p>
-                    </div>
-
-                    <!-- Tampilan Saat Memproses -->
-                    <div class="loading-state hidden" id="loading-state">
-                        <div class="loader"></div>
-                        <p>Sedang menganalisis citra, harap tunggu...</p>
-                    </div>
-
-                    <!-- Tampilan Hasil Diagnosis -->
-                    <div class="report-state hidden" id="report-state">
-                        <div class="report-item">
-                            <h3>Hasil Diagnosis</h3>
-                            <p id="result-text" class="result-text-placeholder"></p>
+                        <div class="empty-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6M8 11h6"/></svg>
                         </div>
+                        <p class="empty-title">Belum ada citra yang dianalisis</p>
+                        <p class="empty-sub">Unggah citra atau pilih salah satu contoh di sebelah kiri.</p>
+                        <ol class="how">
+                            <li><b>Pra-pemrosesan</b><span>Citra diubah ke 224×224 piksel dan dinormalisasi.</span></li>
+                            <li><b>Klasifikasi CNN</b><span>Model memberi skor peluang karsinoma 0–1.</span></li>
+                            <li><b>Hasil</b><span>Skor di atas 0,5 dikategorikan karsinoma.</span></li>
+                        </ol>
+                    </div>
+
+                    <div class="loading-state hidden" id="loading-state">
+                        <div class="loader" aria-hidden="true"></div>
+                        <p>Sedang menganalisis citra…</p>
+                    </div>
+
+                    <div class="report-state hidden" id="report-state">
+                        <div class="verdict" id="verdict">
+                            <span class="verdict-icon" aria-hidden="true">
+                                <svg class="ic-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+                                <svg class="ic-warn" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+                            </span>
+                            <div>
+                                <span class="verdict-label">Hasil diagnosis</span>
+                                <p id="result-text"></p>
+                            </div>
+                        </div>
+
+                        <div class="score" id="score-block">
+                            <div class="score-head">
+                                <span>Skor peluang karsinoma</span>
+                                <b id="score-value">0,00</b>
+                            </div>
+                            <div class="meter" aria-hidden="true">
+                                <div class="meter-fill" id="meter-fill"></div>
+                                <span class="meter-threshold" title="Ambang 0,5"></span>
+                            </div>
+                            <div class="meter-scale"><span>0 · Normal</span><span>0,5</span><span>1 · Karsinoma</span></div>
+                        </div>
+
                         <div class="report-item">
                             <h3>Rekomendasi</h3>
-                            <p id="recommendation-text">Disarankan untuk konsultasi lebih lanjut dengan dokter spesialis untuk validasi dan penanganan.</p>
+                            <p id="recommendation-text"></p>
                         </div>
-                        <button id="new-analysis-button" class="button primary">Analisis Baru</button>
+
+                        <p class="disclaimer">Hasil ini merupakan alat bantu penelitian skripsi dan bukan pengganti diagnosis dokter.</p>
+
+                        <button type="button" id="new-analysis-button" class="button primary">Analisis citra lain</button>
+                    </div>
+
+                    <div class="error-state hidden" id="error-state">
+                        <div class="empty-icon err" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+                        </div>
+                        <p class="empty-title">Analisis gagal</p>
+                        <p class="empty-sub" id="error-text"></p>
+                        <button type="button" id="retry-button" class="button secondary">Coba lagi</button>
                     </div>
                 </div>
             </section>
         </main>
+
+        <footer class="app-footer">
+            Skripsi S1 Informatika · Universitas Gunadarma · Naufal Fadillah
+        </footer>
     </div>
 
-    <!-- Script JavaScript -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
